@@ -6,10 +6,11 @@ import numpy as np
 import cv2
 
 
-img_name = 'test_images/test2.jpg'
+img_name = 'test_images/straight_lines1.jpg'
 img = mpimg.imread(img_name)
 
-binary_warped = pipeline(img)
+def process_img(img):
+    binary_warped, M, Minv = pipeline(img)
 
 
 # f, (ax1, ax2) = plt.subplots(1, 2, figsize=(24, 9))
@@ -24,6 +25,8 @@ binary_warped = pipeline(img)
 #
 # Assuming you have created a warped binary image called "binary_warped"
 # Take a histogram of the bottom half of the image
+
+
 histogram = np.sum(binary_warped[binary_warped.shape[0]//2:,:], axis=0)
 # Create an output image to draw on and  visualize the result
 out_img = np.dstack((binary_warped, binary_warped, binary_warped))*255
@@ -108,6 +111,7 @@ plt.xlim(0, 1280)
 plt.ylim(720, 0)
 plt.show()
 
+
 y_eval = np.max(ploty)
 left_curverad = ((1 + (2*left_fit[0]*y_eval + left_fit[1])**2)**1.5) / np.absolute(2*left_fit[0])
 right_curverad = ((1 + (2*right_fit[0]*y_eval + right_fit[1])**2)**1.5) / np.absolute(2*right_fit[0])
@@ -124,3 +128,28 @@ left_curverad = ((1 + (2*left_fit_cr[0]*y_eval*ym_per_pix + left_fit_cr[1])**2)*
 right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
 # Now our radius of curvature is in meters
 print(left_curverad, 'm', right_curverad, 'm')
+
+#polly draw#
+def drawpolly(img, binary_warped, left_fit, right_fit, Minv):
+    new_img = np.copy(img)
+    warp_zero = np.zeros_like(binary_warped).astype(np.uint8)
+    color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
+
+    ploty = np.linspace(0, binary_warped.shape[0] - 1, binary_warped.shape[0])
+    left_fitx = left_fit[0] * ploty ** 2 + left_fit[1] * ploty + left_fit[2]
+    right_fitx = right_fit[0] * ploty ** 2 + right_fit[1] * ploty + right_fit[2]
+
+    # Recast the x and y points into usable format for cv2.fillPoly()
+    pts_left = np.array([np.transpose(np.vstack([left_fitx, ploty]))])
+    pts_right = np.array([np.flipud(np.transpose(np.vstack([right_fitx, ploty])))])
+    pts = np.hstack((pts_left, pts_right))
+
+    cv2.polylines(color_warp, np.int_([pts]), isClosed=False, color=(0, 0, 255), thickness=40)
+    cv2.fillPoly(color_warp, np.int_(pts), (34, 255, 34))
+    newwarp = cv2.warpPerspective(color_warp, Minv, (img.shape[1], img.shape[0]))
+    result = cv2.addWeighted(new_img, 1, newwarp, 0.5, 0)
+    return result
+
+tmp_img = drawpolly(img, binary_warped, left_fit, right_fit, Minv)
+plt.imshow(tmp_img)
+plt.show()

@@ -100,8 +100,9 @@ def transform(img):
     return warped, M, Minv
 
 
+objpoints, imgpoints = my_cc.camera_calibration()
 def pipeline(img):
-    objpoints, imgpoints = my_cc.camera_calibration()
+
     undistored = my_cc.undistort(img, objpoints, imgpoints)
 
     sobelx = abs_sobel(undistored, 'x', (50, 255))
@@ -113,7 +114,7 @@ def pipeline(img):
 
     transformed, M, Minv = transform(combined)
 
-    return transformed
+    return transformed, M, Minv
 
 
 # objpoints, imgpoints = my_cc.camera_calibration()
