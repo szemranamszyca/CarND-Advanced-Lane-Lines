@@ -1,10 +1,8 @@
-# **Behavioral Cloning** 
+# **Advanced Lane Finding Project**
 
 ## Arkadiusz Konior - Project 3.
 
 ---
-
-**Advanced Lane Finding Project**
 
 The goals / steps of this project are the following:
 
@@ -23,6 +21,7 @@ The goals / steps of this project are the following:
 [calib_chess]: ./imgs/calib_chec.png "Calibration chessobard"
 [distortion]: ./imgs/distortion.png "Distortion examples"
 [thresh]: ./imgs/thresh.png "Thresold examples"
+[transform]: ./imgs/transform.png "Transform examples"
 
 
 [image3]: ./examples/binary_combo_example.jpg "Binary Example"
@@ -74,7 +73,7 @@ All operations for color transform could be find at file my_img_manipulations.py
 
 ![Thresholds][thresh]
 
-#### 3. {erspective transform and provide an example of a transformed image.
+#### 3. Perspective transform
 
 Code for perspective transform could be found in my_img_manipulation, function is called `transform`. Values of trapezoid are calculate based on fact, that camera is at fixed position. 
 
@@ -102,8 +101,6 @@ Code for perspective transform could be found in my_img_manipulation, function i
     left_bottom_dst = [offset, img_height]
     right_bottom_dst = [img_width-offset, img_height]
 ```
-
-This resulted in the following source and destination points:
 
 
 ![Transformation example][transform]
