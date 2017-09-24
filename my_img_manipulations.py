@@ -103,7 +103,6 @@ def transform(img):
 objpoints, imgpoints = my_cc.camera_calibration()
 
 def pipeline(img):
-
     undistored = my_cc.undistort(img, objpoints, imgpoints)
 
     sobelx = abs_sobel(undistored, 'x', (50, 255))
@@ -135,17 +134,17 @@ def pipeline(img):
 #
 # transformed_nobinary, M_nb, Minv_mb = transform(undistored)
 # transformed, M, Minv = transform(combined)
-
-
-# img = cv2.imread('./test_images/straight_lines1.jpg')
+#
+#
+# img = cv2.imread('./test_images/test3.jpg')
 # img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-# transformed, M, Minv= transform(img)
+# thresholded, M, Minv = pipeline(img)
 #
 # f, (ax1, ax2) = plt.subplots(1, 2, figsize=(24, 9))
 # f.tight_layout()
 # ax1.imshow(img)
 # ax1.set_title('Original', fontsize=50)
-# ax2.imshow(transformed)
-# ax2.set_title('Transformed', fontsize=50)
+# ax2.imshow(thresholded, cmap='gray')
+# ax2.set_title('Thresholded', fontsize=50)
 # plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
 # plt.show()
