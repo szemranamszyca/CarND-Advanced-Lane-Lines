@@ -65,7 +65,7 @@ def color_select(img, sthresh=(0, 255), vtresh=(0,255)):
     return binary_output
 
 def transform(img):
-    # gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    # img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     img_size = (img.shape[1], img.shape[0])
 
     img_width = img_size[0]
@@ -101,6 +101,7 @@ def transform(img):
 
 
 objpoints, imgpoints = my_cc.camera_calibration()
+
 def pipeline(img):
 
     undistored = my_cc.undistort(img, objpoints, imgpoints)
@@ -134,13 +135,17 @@ def pipeline(img):
 #
 # transformed_nobinary, M_nb, Minv_mb = transform(undistored)
 # transformed, M, Minv = transform(combined)
+
+
+# img = cv2.imread('./test_images/straight_lines1.jpg')
+# img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+# transformed, M, Minv= transform(img)
 #
 # f, (ax1, ax2) = plt.subplots(1, 2, figsize=(24, 9))
 # f.tight_layout()
-# ax1.imshow(transformed_nobinary)
-# ax1.set_title('Undistorted', fontsize=50)
-# ax2.imshow(transformed, cmap='gray')
-# ax2.set_title('Combined', fontsize=50)
+# ax1.imshow(img)
+# ax1.set_title('Original', fontsize=50)
+# ax2.imshow(transformed)
+# ax2.set_title('Transformed', fontsize=50)
 # plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
-#
 # plt.show()
