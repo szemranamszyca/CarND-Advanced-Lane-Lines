@@ -26,9 +26,10 @@ The goals / steps of this project are the following:
 [distortion2]: ./imgs/distortion2.png "Distortion examples 2"
 
 [thresh1]: ./imgs/thresh1.png "Thresold examples"
-[thresh2]: ./imgs/thresh1.png "Thresold examples"
+[thresh2]: ./imgs/thresh2.png "Thresold examples"
 [transform]: ./imgs/transform.png "Transform examples"
-[slide]: ./imgs/slliding.png "Windows slide"
+[example]: ./imgs/example.png "Pipeline example"
+[slide]: ./imgs/sliding.png "Windows slide"
 [video1]: ./project_video_output.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
