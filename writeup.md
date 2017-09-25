@@ -25,17 +25,12 @@ The goals / steps of this project are the following:
 [distortion1]: ./imgs/distortion1.png "Distortion examples 1"
 [distortion2]: ./imgs/distortion2.png "Distortion examples 2"
 
-[thresh]: ./imgs/thresh.png "Thresold examples"
+[thresh1]: ./imgs/thresh1.png "Thresold examples"
+[thresh2]: ./imgs/thresh2.png "Thresold examples"
 [transform]: ./imgs/transform.png "Transform examples"
-[slide]: ./imgs/transform.png "Windows slide"
-
-
-
-[image3]: ./examples/binary_combo_example.jpg "Binary Example"
-[image4]: ./examples/warped_straight_lines.jpg "Warp Example"
-[image5]: ./examples/color_fit_lines.jpg "Fit Visual"
-[image6]: ./examples/example_output.jpg "Output"
-[video1]: ./project_video.mp4 "Video"
+[example]: ./imgs/example.png "Pipeline example"
+[slide]: ./imgs/sliding.png "Windows slide"
+[video1]: ./project_video_output.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
 
@@ -61,7 +56,7 @@ Examples:
 
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
 
-![Undistored chessboard[calib_chess]
+![Undistored chessboard][calib_chess]
 
 
 ### Pipeline (single images)
@@ -83,35 +78,36 @@ All operations for color transform could be find at file my_img_manipulations.py
 + value threshold (50, 255)
 
 
-![Thresholds][thresh]
+![Thresholds example][thresh1]
+![Thresholds example][thresh2]
 
 #### 3. Perspective transform
 
 Code for perspective transform could be found in my_img_manipulation, function is called `transform`. Values of trapezoid are calculate based on fact, that camera is at fixed position and they relative against image shape. 
 
 ```python
-    img_width = img_size[0]
-    img_height = img_size[1]
+img_width = img_size[0]
+img_height = img_size[1]
 
-    bottom_width_pct = .76
-    bottom_width = img_width * bottom_width_pct
+bottom_width_pct = .76
+bottom_width = img_width * bottom_width_pct
 
-    top_width_pct = .08
-    top_width = img_width * top_width_pct
+top_width_pct = .08
+top_width = img_width * top_width_pct
 
-    top_trim = .62
-    bottom_trim = 0.935
+top_trim = .62
+bottom_trim = 0.935
 
-    left_top_src = [img_width/2 - top_width/2, img_height * top_trim]
-    right_top_src = [img_width/2 + top_width/2, img_height * top_trim]
-    left_bottom_src= [img_width/2 - bottom_width/2, img_height * bottom_trim]
-    right_bottom_src = [img_width/2 + bottom_width/2, img_height * bottom_trim]
-    
-    offset = img_width*.20
-    left_top_dst = [offset, 0]
-    right_top_dst = [img_width-offset, 0]
-    left_bottom_dst = [offset, img_height]
-    right_bottom_dst = [img_width-offset, img_height]
+left_top_src = [img_width/2 - top_width/2, img_height * top_trim]
+right_top_src = [img_width/2 + top_width/2, img_height * top_trim]
+left_bottom_src= [img_width/2 - bottom_width/2, img_height * bottom_trim]
+right_bottom_src = [img_width/2 + bottom_width/2, img_height * bottom_trim]
+
+offset = img_width*.20
+left_top_dst = [offset, 0]
+right_top_dst = [img_width-offset, 0]
+left_bottom_dst = [offset, img_height]
+right_bottom_dst = [img_width-offset, img_height]
 ```
 
 
@@ -122,11 +118,11 @@ Code for perspective transform could be found in my_img_manipulation, function i
 To find lane-line I've used suggested method - sliding windows. It could be find in file lane_findings.py. To get "starting points" for each line, I've calcucated histogram from the bottom part of image:
 
 ```python
-    histogram = np.sum(binary_warped[binary_warped.shape[0]//2:,:], axis=0)
-    out_img = np.dstack((binary_warped, binary_warped, binary_warped))*255
-    midpoint = np.int(histogram.shape[0]/2)
-    leftx_base = np.argmax(histogram[:midpoint])
-    rightx_base = np.argmax(histogram[midpoint:]) + midpoint
+histogram = np.sum(binary_warped[binary_warped.shape[0]//2:,:], axis=0)
+out_img = np.dstack((binary_warped, binary_warped, binary_warped))*255
+midpoint = np.int(histogram.shape[0]/2)
+leftx_base = np.argmax(histogram[:midpoint])
+rightx_base = np.argmax(histogram[midpoint:]) + midpoint
 ```
 
 Number of windows was set to 9. 
@@ -134,8 +130,8 @@ Number of windows was set to 9.
 To find an polynomial based on founded pixels, I've used these functions:
 
 ```python
-    left_fit = np.polyfit(lefty, leftx, 2)
-    right_fit = np.polyfit(righty, rightx, 2)
+left_fit = np.polyfit(lefty, leftx, 2)
+right_fit = np.polyfit(righty, rightx, 2)
 ```
 
 ![Windows slide result][slide]
@@ -147,26 +143,27 @@ Radious of curvature and position of vehicle are calcuted in *calccurv_and_cente
 To translate values from pixel space to meters, I've used formula:
 
 ```python
-    ym_per_pix = 3.048 / 100  # meters per pixel in y dimension, lane line is 10 ft = 3.048 meters
-    xm_per_pix = 3.7 / 378  # meters per pixel in x dimension, lane width is 12 ft = 3.7 meters
-    
-    left_fit_cr = np.polyfit(lefty * ym_per_pix, leftx * xm_per_pix, 2)
-    right_fit_cr = np.polyfit(righty * ym_per_pix, rightx * xm_per_pix, 2)
-    # Calculate the new radii of curvature
-    left_curverad = ((1 + (2 * left_fit_cr[0] * y_eval * ym_per_pix + left_fit_cr[1]) ** 2) ** 1.5) / np.absolute(
-        2 * left_fit_cr[0])
-    right_curverad = (
-                     (1 + (2 * right_fit_cr[0] * y_eval * ym_per_pix + right_fit_cr[1]) ** 2) ** 1.5) / np.absolute(
-        2 * right_fit_cr[0])
+ym_per_pix = 35 / 720  # meters per pixel in y dimension, approx 35m is visible
+xm_per_pix = 3.7 / 600  # meters per pixel in x dimension, lane width is 12 ft = 3.7 meters
+
+left_fit_cr = np.polyfit(lefty * ym_per_pix, leftx * xm_per_pix, 2)
+right_fit_cr = np.polyfit(righty * ym_per_pix, rightx * xm_per_pix, 2)
+# Calculate the new radii of curvature
+left_curverad = ((1 + (2 * left_fit_cr[0] * y_eval * ym_per_pix + left_fit_cr[1]) ** 2) ** 1.5) / np.absolute(
+    2 * left_fit_cr[0])
+right_curverad = (
+                 (1 + (2 * right_fit_cr[0] * y_eval * ym_per_pix + right_fit_cr[1]) ** 2) ** 1.5) / np.absolute(
+    2 * right_fit_cr[0])
 ```
+Lane is 3.7m wide, and on the image it is represented by approximately 600px. As well, 35m are visible in front of the car and this is 720px (image height).
 
 Center of car was calcuate based on that equation:
 
 ```python
-       l_fit_x_int = left_fit[0] * h ** 2 + left_fit[1] * h + left_fit[2]
-        r_fit_x_int = right_fit[0] * h ** 2 + right_fit[1] * h + right_fit[2]
-        lane_center_position = (r_fit_x_int + l_fit_x_int) / 2
-        center_dist = (car_position - lane_center_position) * xm_per_pix
+l_fit_x_int = left_fit[0] * h ** 2 + left_fit[1] * h + left_fit[2]
+r_fit_x_int = right_fit[0] * h ** 2 + right_fit[1] * h + right_fit[2]
+lane_center_position = (r_fit_x_int + l_fit_x_int) / 2
+center_dist = (car_position - lane_center_position) * xm_per_pix
 ```
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
@@ -181,7 +178,7 @@ Function *process_img(...)*  at file *process_video.py* is the place, where all 
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result][video1]
 
 ---
 
