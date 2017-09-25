@@ -143,8 +143,8 @@ Radious of curvature and position of vehicle are calcuted in *calccurv_and_cente
 To translate values from pixel space to meters, I've used formula:
 
 ```python
-ym_per_pix = 3.048 / 100  # meters per pixel in y dimension, lane line is 10 ft = 3.048 meters
-xm_per_pix = 3.7 / 378  # meters per pixel in x dimension, lane width is 12 ft = 3.7 meters
+ym_per_pix = 35 / 720  # meters per pixel in y dimension, approx 35m is visible
+xm_per_pix = 3.7 / 600  # meters per pixel in x dimension, lane width is 12 ft = 3.7 meters
 
 left_fit_cr = np.polyfit(lefty * ym_per_pix, leftx * xm_per_pix, 2)
 right_fit_cr = np.polyfit(righty * ym_per_pix, rightx * xm_per_pix, 2)
@@ -155,6 +155,7 @@ right_curverad = (
                  (1 + (2 * right_fit_cr[0] * y_eval * ym_per_pix + right_fit_cr[1]) ** 2) ** 1.5) / np.absolute(
     2 * right_fit_cr[0])
 ```
+Lane is 3.7m wide, and on the image it is represented by approximately 600px. As well, 35m are visible in front of the car and this is 720px (image height).
 
 Center of car was calcuate based on that equation:
 
