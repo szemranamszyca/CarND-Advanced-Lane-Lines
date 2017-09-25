@@ -19,12 +19,12 @@ def process_img(img):
     result = putdata(polly, (left_curverad + right_curverad)/2, center_dist)
     return result
 
-#
-# video_output1 = 'project_video_output.mp4'
-# video_input1 = VideoFileClip('project_video.mp4')#subclip(0,2)
-# processed_video = video_input1.fl_image(process_img)
-# processed_video.write_videofile(video_output1, audio=False)
 
-result = process_img(img)
-plt.imshow(result)
-plt.show()
+video_output1 = 'project_video_output_fixed.mp4'
+video_input1 = VideoFileClip('project_video.mp4')#subclip(0,2)
+processed_video = video_input1.fl_image(process_img)
+processed_video.write_videofile(video_output1, audio=False)
+
+# result = process_img(img)
+# plt.imshow(result)
+# plt.show()
