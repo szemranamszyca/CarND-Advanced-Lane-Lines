@@ -6,7 +6,7 @@
 
 The goals / steps of this project are the following:
 
-* Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
+* Compute the camera calibration matrix and distortion coefficients using a set of chessboard images.
 * Apply a distortion correction to raw images.
 * Use color transforms, gradients, etc., to create a thresholded binary image.
 * Apply a perspective transform to rectify binary image ("birds-eye view").
@@ -40,7 +40,7 @@ The goals / steps of this project are the following:
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-Code for this step is located in file *camera_calibration.py*
+Code for this step is located in the file *camera_calibration.py*
 Using glob library, I've read all calibration images with parameters:
 
 + nx = 9
@@ -70,7 +70,7 @@ To undistort image, I've used:
 
 #### 2 Color transforms, gradients or other methods to create a thresholded binary image
 
-All operations for color transform could be find at file my_img_manipulations.py. I've decied to combine method (pipline function):
+All operations for color transform could be found at file my_img_manipulations.py. I've decided to combine method (pipeline function):
 
 + sobelx with threshold (50,255)
 + sobely with threshold (25,255)
@@ -83,7 +83,7 @@ All operations for color transform could be find at file my_img_manipulations.py
 
 #### 3. Perspective transform
 
-Code for perspective transform could be found in my_img_manipulation, function is called `transform`. Values of trapezoid are calculate based on fact, that camera is at fixed position and they relative against image shape. 
+Code for perspective transform could be found in my_img_manipulation, the function is called `transform`. Values of trapezoid are calculated based on the fact that camera is at a fixed position and they relative against image shape. 
 
 ```python
 img_width = img_size[0]
@@ -115,7 +115,7 @@ right_bottom_dst = [img_width-offset, img_height]
 
 #### 4. Identified lane-line pixels and fit their positions with a polynomial.
 
-To find lane-line I've used suggested method - sliding windows. It could be find in file lane_findings.py. To get "starting points" for each line, I've calcucated histogram from the bottom part of image:
+In order to find lane-line, I've used the suggested method - sliding windows. It could be found in the file lane_findings.py. To get "starting points" for each line, I've calcucated histogram from the bottom part of image:
 
 ```python
 histogram = np.sum(binary_warped[binary_warped.shape[0]//2:,:], axis=0)
@@ -125,9 +125,9 @@ leftx_base = np.argmax(histogram[:midpoint])
 rightx_base = np.argmax(histogram[midpoint:]) + midpoint
 ```
 
-Number of windows was set to 9. 
+The number of windows was set to 9. 
 
-To find an polynomial based on founded pixels, I've used these functions:
+To find a polynomial based on found pixels, I've used these functions:
 
 ```python
 left_fit = np.polyfit(lefty, leftx, 2)
@@ -136,7 +136,7 @@ right_fit = np.polyfit(righty, rightx, 2)
 
 ![Windows slide result][slide]
 
-#### 5. Radius of curvature of the lane and the position of the vehicle with respect to center.
+#### 5. Radius of curvature of the lane and the position of the vehicle with respect to the center.
 
 Radious of curvature and position of vehicle are calcuted in *calccurv_and_centerdist(...)*  function in lane_findings file.
 
@@ -155,9 +155,9 @@ right_curverad = (
                  (1 + (2 * right_fit_cr[0] * y_eval * ym_per_pix + right_fit_cr[1]) ** 2) ** 1.5) / np.absolute(
     2 * right_fit_cr[0])
 ```
-Lane is 3.7m wide, and on the image it is represented by approximately 600px. As well, 35m are visible in front of the car and this is 720px (image height).
+Lane is 3.7m wide, and on the image it is represented by approximately 600px. Also, 35m are visible in front of the car and this is 720px (image height).
 
-Center of car was calcuate based on that equation:
+The center of the car was calcuated based on the following equation:
 
 ```python
 l_fit_x_int = left_fit[0] * h ** 2 + left_fit[1] * h + left_fit[2]
@@ -168,7 +168,7 @@ center_dist = (car_position - lane_center_position) * xm_per_pix
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-Function *process_img(...)*  at file *process_video.py* is the place, where all functions meet :) Here's example how it's working:
+The function *process_img(...)*  in the file *process_video.py* is the place, where all functions meet :) Here's an example of how it works:
 
 ![Example of processed image][example]
 
