@@ -46,7 +46,7 @@ Using glob library, I've read all calibration images with parameters:
 + nx = 9
 + ny = 6
 
-"Object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0. `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection. 
+"Object points" will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0. `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection. 
 
 Examples:
 
@@ -70,7 +70,7 @@ To undistort image, I've used:
 
 #### 2 Color transforms, gradients or other methods to create a thresholded binary image
 
-All operations for color transform could be found at file my_img_manipulations.py. I've decided to combine method (pipeline function):
+All operations for color transform could be found in the file my_img_manipulations.py. I've decided to combine methods (pipeline functions):
 
 + sobelx with threshold (50,255)
 + sobely with threshold (25,255)
@@ -83,7 +83,7 @@ All operations for color transform could be found at file my_img_manipulations.p
 
 #### 3. Perspective transform
 
-Code for perspective transform could be found in my_img_manipulation, the function is called `transform`. Values of trapezoid are calculated based on the fact that camera is at a fixed position and they relative against image shape. 
+Code for perspective transform could be found in my_img_manipulation, the function is called `transform`. Values of trapezoid are calculated based on the fact that camera is at a fixed position, and they are relative against image shape. 
 
 ```python
 img_width = img_size[0]
